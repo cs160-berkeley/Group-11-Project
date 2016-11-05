@@ -177,9 +177,23 @@ let mainScreen = new Column({ 	name: 'main',	left: 0, right: 0, top: 0, bottom
 			]
 		})	]});
 
+let menuItem = Container.template($ => ({ 
+	name: $.name,
+	top: 20, bottom:20,
+	width: 200,
+	skin: blueSkin,
+	contents: [
+		new Label({ 
+			style: new Style({ color: 'white', font: 'bold 30px Avenir' }), 
+			string: $.label })
+	]
+}));let menu = new Column({ 	name: 'menu',
+	skin: background,
+	height: 480,	contents: [		new Line({			name: 'header',			skin: new Skin({ fill: 'white' }),			height: 100, width: 320,			contents: [				new Label({ 
+					top: 5, bottom: 5,					left: 20,					string: "Foodwise", 					style: new Style({ font: 'bold 50px Avenir', color: '#2D9CDB' })}),				//refreshBowlsButton,			]		}),		new menuItem({ name: 'inventory', label: 'INVENTORY' }),		new menuItem({ name: 'shopping', label: 'SHOPPING' }),		new menuItem({ name: 'recipes', label: 'RECIPES' }),	]});
 
 // pins shit
-let remotePins;application.behavior = Behavior({    onLaunch(application) {        application.add(mainScreen);        this.data = { labels: {} };        let discoveryInstance = Pins.discover(            connectionDesc => {                if (connectionDesc.name == "amount-sensors") {                    trace("Connecting to remote pins\n");                    remotePins = Pins.connect(connectionDesc);
+let remotePins;application.behavior = Behavior({    onLaunch(application) {        application.add(menu);        this.data = { labels: {} };        let discoveryInstance = Pins.discover(            connectionDesc => {                if (connectionDesc.name == "amount-sensors") {                    trace("Connecting to remote pins\n");                    remotePins = Pins.connect(connectionDesc);
                     remotePins.invoke("/food/read", value => {
 						application.main.amounts.bowls.foodCol.bowl.text.string = value.amount.toPrecision(2) + ' cups';					});
 					remotePins.invoke("/water/read", value => {
