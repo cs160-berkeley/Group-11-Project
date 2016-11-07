@@ -57,10 +57,11 @@ let mainScreen = new Column({
 			]
 		}),
 		new Label({
+			left: 10, top: 10,
 			name: 'message',
 			style: new Style({ font: '30px Avenir', color: 'black' }),
-			string: "Go to the add item screen on your Foodwise app to continue."
-		})
+			string: "Click '+' on app to get started!"
+		}),
 	]
 });
 
@@ -95,6 +96,13 @@ application.behavior = Behavior({
                     digital: { pin: 60, direction: "input" },
                 }
             },
+            ready: {
+                require: "Digital",
+                pins: {
+                    ground: { pin: 61, type: "Ground" },
+                    digital: { pin: 62, direction: "output" },
+                }
+            },
             // camera: {
             //     require: "camera",
             //     pins: {
@@ -110,10 +118,8 @@ application.behavior = Behavior({
 		if (success) {
 			application.add(mainScreen);
 			
-			Pins.repeat("/food/read", 100, value => this.onFoodAmountChanged(application, value));
-			Pins.repeat("/water/read", 100, value => this.onWaterAmountChanged(application, value));
-			Pins.repeat("/refillFood/read", 100, value => this.onRefillFood(application, value));
-			Pins.repeat("/refillWater/read", 100, value => this.onRefillWater(application, value));
+			Pins.repeat("/ready/read", 100, value => this.onReady(application, value));
+			Pins.repeat("/scan/read", 100, value => this.onScan(application, value));
 
 			Pins.share("ws", {zeroconf: true, name: "food-sensors"});
 		}
@@ -121,6 +127,60 @@ application.behavior = Behavior({
             application.skin = new Skin({ fill: "#f78e0f" });
             var style = new Style({ font:"bold 36px", color:"white", horizontal:"center", vertical:"middle" });
             application.add(new Label({ left:0, right:0, top:0, bottom:0, style: style, string:"Error could not configure pins" }));
+		}
+	},
+	onReady(app, value) {
+		if (value) {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '30px Avenir', color: 'black' }),
+					string: "Ready!"
+				})
+			);
+			app.main.add(
+				new Label({
+					left: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Press SCAN button to scan item."
+				})
+			)
+		} else {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Click '+' on app to get started!"
+				})
+			)
+		}
+	},
+	onScan(app, value) {
+		if (value) {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '30px Avenir', color: 'black' }),
+					string: "Scan complete."
+				})
+			);
+			app.main.add(
+				new Label({
+					left: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Finish adding item on app."
+				})
+			)
+		} else {
+			Pins.invoke("/ready/read", value => this.onReady(application, value));
 		}
 	},
 	onFoodAmountChanged(app, value) {		
