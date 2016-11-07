@@ -2,17 +2,49 @@
 
 var Pins = require("pins");
 
-let background = new Skin({ fill: '#F2F2F2' });let orangeSkin = new Skin({ fill: '#F2994A' });let blueSkin = new Skin({ fill: '#56CCF2' });let whiteSkin = new Skin({ fill: 'white' });let buttonStyle = new Style({font: '30px Avenir', color: 'white'});let refillStyle = new Style({font: '25px Avenir', color: 'black'});let bowlLabelStyle = new Style({font: 'bold 30px Avenir', color: 'black'});
-let foodBowl = new Container({	name: 'bowl',
-	width: 100, height: 100,	left: 10, right: 10, skin: orangeSkin,	contents: [		new Label({ name: 'text', string: 'Food', style: buttonStyle })	],	active: true,	behavior: Behavior ({		onTouchEnded: function(content, id, x, y, ticks) {
-			//		}	}) });
+let background = new Skin({ fill: '#F2F2F2' });
+let orangeSkin = new Skin({ fill: '#F2994A' });
+let blueSkin = new Skin({ fill: '#56CCF2' });
+let whiteSkin = new Skin({ fill: 'white' });
+let buttonStyle = new Style({font: '30px Avenir', color: 'white'});
+let refillStyle = new Style({font: '25px Avenir', color: 'black'});
+let bowlLabelStyle = new Style({font: 'bold 30px Avenir', color: 'black'});
 
-let waterBowl = new Container({	name: 'bowl',
-	width: 100, height: 100,	left: 10, right:10, skin: blueSkin,	contents: [		new Label({ name:'text',string: 'Water', style: buttonStyle })	],	active: true,	behavior: Behavior ({		onTouchEnded: function(content, id, x, y, ticks) {
-			//		}	})});
+let foodBowl = new Container({
+	name: 'bowl',
+	width: 100, height: 100,
+	left: 10, right: 10, skin: orangeSkin,
+	contents: [
+		new Label({ name: 'text', string: 'Food', style: buttonStyle })
+	],
+	active: true,
+	behavior: Behavior ({
+		onTouchEnded: function(content, id, x, y, ticks) {
+			//
+		}
+	}) 
+});
+
+let waterBowl = new Container({
+	name: 'bowl',
+	width: 100, height: 100,
+	left: 10, right:10, skin: blueSkin,
+	contents: [
+		new Label({ name:'text',string: 'Water', style: buttonStyle })
+	],
+	active: true,
+	behavior: Behavior ({
+		onTouchEnded: function(content, id, x, y, ticks) {
+			//
+		}
+	})
+});
 
 
-let mainScreen = new Column({ 	name: 'main',	left: 0, right: 0, top: 0, bottom: 0, skin: background,	contents: [
+let mainScreen = new Column({ 
+	name: 'main',
+	left: 0, right: 0, top: 0, bottom: 0, skin: background,
+	contents: [
 		new Line({
 			name: 'header',
 			skin: new Skin({ fill: 'white' }),
@@ -20,29 +52,18 @@ let mainScreen = new Column({ 	name: 'main',	left: 0, right: 0, top: 0, bottom
 			contents: [
 				new Label({ 
 					left: 20,
-					string: "PetFeedr", 
+					string: "Foodwise", 
 					style: new Style({ font: 'bold 50px Avenir', color: '#2D9CDB' })}),
 			]
 		}),
-		new Line({ 
-			name: 'amounts',
-			contents: [ 
-				new Column({
-					name: "foodCol",
-					top: 10,
-					contents: [
-						new Label({ string: "Food", style: bowlLabelStyle }),
-						foodBowl
-					]}),
-				new Column({
-					name: "waterCol",
-					top: 10,
-					contents: [
-						new Label({ string: "Water", style: bowlLabelStyle }),
-						waterBowl 
-					]})
-			]
-		})	]});
+		new Label({
+			left: 10, top: 10,
+			name: 'message',
+			style: new Style({ font: '30px Avenir', color: 'black' }),
+			string: "Click '+' on app to get started!"
+		}),
+	]
+});
 
 let refillFood, refillWater;
 
@@ -50,8 +71,8 @@ application.behavior = Behavior({
     onLaunch(application) {
         this.data = { labels: {} };
 		Pins.configure({
-            food: {
-                require: "food",
+            scale: {
+                require: "scale",
                 pins: {
                   power: {pin: 51, type:"Power", voltage:3.3},
         					uv: {pin: 52},
@@ -59,43 +80,107 @@ application.behavior = Behavior({
         					vref: {pin: 54}
                 }
             },
-            water: {
-                require: "water",
+            // water: {
+            //     require: "water",
+            //     pins: {
+            //       power: {pin: 55, type:"Power", voltage:3.3},
+        				// 	uv: {pin: 56},
+            //       ground: {pin: 57, type:"Ground"},
+        				// 	vref: {pin: 58}
+            //     }
+            // },
+            scan: {
+                require: "Digital",
                 pins: {
-                  power: {pin: 55, type:"Power", voltage:3.3},
-        					uv: {pin: 56},
-                  ground: {pin: 57, type:"Ground"},
-        					vref: {pin: 58}
+                    ground: { pin: 59, type: "Ground" },
+                    digital: { pin: 60, direction: "input" },
                 }
             },
-            refillFood: {                require: "Digital",                pins: {                    ground: { pin: 59, type: "Ground" },                    digital: { pin: 60, direction: "output" },                }            },  
-            refillWater: {                require: "Digital",                pins: {                    ground: { pin: 61, type: "Ground" },                    digital: { pin: 62, direction: "output" },                }            },
-            camera: {
-                require: "camera",
+            ready: {
+                require: "Digital",
                 pins: {
-                  power: {pin: 63, type:"Power", voltage:3.3},
-        					uv: {pin: 64},
-                  ground: {pin: 65, type:"Ground"},
-        					vref: {pin: 66}
+                    ground: { pin: 61, type: "Ground" },
+                    digital: { pin: 62, direction: "output" },
                 }
             },
+            // camera: {
+            //     require: "camera",
+            //     pins: {
+            //       power: {pin: 63, type:"Power", voltage:3.3},
+        				// 	uv: {pin: 64},
+            //       ground: {pin: 65, type:"Ground"},
+        				// 	vref: {pin: 66}
+            //     }
+            // },
 		}, success => this.onPinsConfigured(application, success));
 	},
 	onPinsConfigured(application, success) {		
 		if (success) {
 			application.add(mainScreen);
 			
-			Pins.repeat("/food/read", 100, value => this.onFoodAmountChanged(application, value));
-			Pins.repeat("/water/read", 100, value => this.onWaterAmountChanged(application, value));
-			Pins.repeat("/refillFood/read", 100, value => this.onRefillFood(application, value));
-			Pins.repeat("/refillWater/read", 100, value => this.onRefillWater(application, value));
+			Pins.repeat("/ready/read", 100, value => this.onReady(application, value));
+			Pins.repeat("/scan/read", 100, value => this.onScan(application, value));
 
-			Pins.share("ws", {zeroconf: true, name: "amount-sensors"});
+			Pins.share("ws", {zeroconf: true, name: "food-sensors"});
 		}
 		else {
             application.skin = new Skin({ fill: "#f78e0f" });
             var style = new Style({ font:"bold 36px", color:"white", horizontal:"center", vertical:"middle" });
             application.add(new Label({ left:0, right:0, top:0, bottom:0, style: style, string:"Error could not configure pins" }));
+		}
+	},
+	onReady(app, value) {
+		if (value) {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '30px Avenir', color: 'black' }),
+					string: "Ready!"
+				})
+			);
+			app.main.add(
+				new Label({
+					left: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Press SCAN button to scan item."
+				})
+			)
+		} else {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Click '+' on app to get started!"
+				})
+			)
+		}
+	},
+	onScan(app, value) {
+		if (value) {
+			app.main.empty(1);
+			app.main.add(
+				new Label({
+					left: 10, top: 10,
+					name: 'message',
+					style: new Style({ font: '30px Avenir', color: 'black' }),
+					string: "Scan complete."
+				})
+			);
+			app.main.add(
+				new Label({
+					left: 10,
+					name: 'message',
+					style: new Style({ font: '25px Avenir', color: 'black' }),
+					string: "Finish adding item on app."
+				})
+			)
+		} else {
+			Pins.invoke("/ready/read", value => this.onReady(application, value));
 		}
 	},
 	onFoodAmountChanged(app, value) {		
