@@ -13,3 +13,6 @@ export let whiteSkin = new Skin({ fill: 'white' });
 
 /* Main screen */
 export let currentScreen = 'inventory';
+
+/* pins */
+export let remotePins;

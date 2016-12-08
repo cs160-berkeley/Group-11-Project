@@ -80,6 +80,7 @@ let FreshnessSlider = HorizontalSlider.template($ => ({
         }
     }
 }));
+
 let freshnessInput = new Line({
 	left: 23, top: 10,
 	name: 'freshInput',
