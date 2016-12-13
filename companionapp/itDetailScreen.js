@@ -36,10 +36,18 @@ function listOfRecipes(recipes) {
 
 //use this function to redo the items list once an element is found and removed. 
 let theItemName = "placeholder";
-function redoOfItems(items, itemName) {
-	let index = items.indexOf((items.name == itemName));
-	// trace(items.name + "\n");
+function redoOfItems(items_arr, nameOfItem) {
+	function checkMatch(arr_item){
+		return arr_item.name != nameOfItem;
+	}
+	items = items_arr.filter(checkMatch);
+}
 
+//reparse the items and rearrange the id acording to their position in the items array.
+function reId(arr_items){
+	for (let i = 0; i < arr_items.length; i++){
+		arr_items[i].id = i;
+	}
 }
 
 let normalStyle = new Style({ font: "20px Avenir", color: "black", horizontal: "left" });
@@ -69,6 +77,7 @@ export let itemScreen = Column.template($ => ({
 						behavior: Behavior({
 							onTouchEnded: function(content){
 								application.main.itm_scrn.updt_qty.updt_line.update_btn.active = false;
+								application.main.itm_scrn.details.removal.active = false;
 								application.main.add(
 									new Column({
 										name: "rem_modal",
@@ -96,7 +105,8 @@ export let itemScreen = Column.template($ => ({
 														active:true,
 														behavior: Behavior({
 															onTouchEnded: function(content){
-																application.main.itm_scrn.updt_qty.updt_line.update_btn.active = true;
+																application.main.itm_scrn.updt_qty.updt_line.update_btn.active = true;																
+																application.main.itm_scrn.details.removal.active = true;
 																application.main.remove(application.main.rem_modal);
 															}
 														})
@@ -110,14 +120,9 @@ export let itemScreen = Column.template($ => ({
 														active: true,
 														behavior: Behavior({
 															onTouchEnded: function(content){
-																// Now the hardest part is to reslove the removal from the items and 
-																//rearrange the items based on id.
-																/* i need to use filter() findIndex() and probably map to 
-																create a new array of items. Once that is created than i can create a new inventory
-																screen and be safe ... i am so sure of this method. but that is tomorrow. */
-																// theItemName = application.main.itm_scrn.details.itm_string.string;
-																// trace(theItemName + "\n");
-																// redoOfItems(items, theItemName);
+																theItemName = application.main.itm_scrn.details.itm_string.string;
+																redoOfItems(items, theItemName);
+																reId(items);
 																application.main.empty(0);
 																application.main.add(InventoryScreen());
 																application.main.add(headerAndNavBar);
