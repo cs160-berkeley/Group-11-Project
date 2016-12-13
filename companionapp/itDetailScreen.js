@@ -81,17 +81,17 @@ export let itemScreen = Column.template($ => ({
 								application.main.add(
 									new Column({
 										name: "rem_modal",
-										width:210, height: 75,
-										skin: borderedWhiteSkin,
+										width:210, height: 90,
+										skin: whiteSkin,
 										contents: [
 											new Label({
-												top:5,
-												style: new Style({ font: 'bold 21px Avenir', color: 'black' }),
+												top:10,
+												style: new Style({ font: '21px Avenir', color: 'black' }),
 												string: "Are you sure you want"
 											}),
 											new Label({
 												top:0,
-												style: new Style({ font: 'bold 21px Avenir', color: 'black' }),
+												style: new Style({ font: '21px Avenir', color: 'black' }),
 												string: "to remove items?"
 											}),
 											new Line({
